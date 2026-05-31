@@ -99,6 +99,13 @@ export const api = {
       body: JSON.stringify({ items }),
     }),
   myOrders: (token: string) => request<Order[]>('/orders/me', { token }),
+  listAllOrders: (token: string) => request<Order[]>('/orders', { token }),
+
+  // admin
+  listUsers: (token: string) =>
+    request<Array<{ id: number; email: string; role: string; createdAt: string }>>('/users', {
+      token,
+    }),
 };
 
 export { ApiClientError };
