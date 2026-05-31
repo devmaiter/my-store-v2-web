@@ -39,6 +39,20 @@ async function request<T>(
   return body as T;
 }
 
+export type ProductInput = {
+  name: string;
+  price: number;
+  image?: string;
+  description?: string;
+  isBlocked?: boolean;
+  categoryId?: number | null;
+};
+
+export type CategoryInput = {
+  name: string;
+  image?: string;
+};
+
 export const api = {
   // products
   listProducts: (q: { limit?: number; offset?: number; minPrice?: number; maxPrice?: number } = {}) => {
@@ -47,10 +61,22 @@ export const api = {
     return request<ProductList>(`/products${sp.toString() ? `?${sp}` : ''}`);
   },
   getProduct: (id: number | string) => request<Product>(`/products/${id}`),
+  createProduct: (token: string, body: ProductInput) =>
+    request<Product>('/products', { method: 'POST', token, body: JSON.stringify(body) }),
+  updateProduct: (token: string, id: number | string, body: Partial<ProductInput>) =>
+    request<Product>(`/products/${id}`, { method: 'PATCH', token, body: JSON.stringify(body) }),
+  deleteProduct: (token: string, id: number | string) =>
+    request<{ id: number }>(`/products/${id}`, { method: 'DELETE', token }),
 
   // categories
   listCategories: () => request<Category[]>('/categories'),
   getCategory: (id: number | string) => request<Category>(`/categories/${id}`),
+  createCategory: (token: string, body: CategoryInput) =>
+    request<Category>('/categories', { method: 'POST', token, body: JSON.stringify(body) }),
+  updateCategory: (token: string, id: number | string, body: Partial<CategoryInput>) =>
+    request<Category>(`/categories/${id}`, { method: 'PATCH', token, body: JSON.stringify(body) }),
+  deleteCategory: (token: string, id: number | string) =>
+    request<{ id: number }>(`/categories/${id}`, { method: 'DELETE', token }),
 
   // auth
   register: (body: { email: string; password: string }) =>
