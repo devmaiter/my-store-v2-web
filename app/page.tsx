@@ -2,7 +2,10 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Lock, ShoppingBag, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Database, Lock, ShoppingBag, Sparkles, Zap } from 'lucide-react';
+
+const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
+const SWAGGER_URL = `${API_BASE.replace(/\/api\/v1\/?$/, '')}/docs`;
 import { api } from '@/lib/api';
 import type { Category, Product } from '@/lib/types';
 import ProductCard, { AddProductTile } from '@/components/ProductCard';
@@ -78,6 +81,16 @@ export default function HomePage() {
                 <Lock size={16} /> Login demo
               </Link>
             )}
+            <a
+              href={SWAGGER_URL}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 rounded-md border border-white/30 px-4 py-2.5 font-medium text-white backdrop-blur transition-all hover:bg-white/10"
+              title="Ver el backend en vivo (Swagger UI con endpoints)"
+            >
+              <Database size={16} /> Ver backend
+              <span className="ml-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-200" />
+            </a>
           </div>
           {!isAuthed && mounted && (
             <p className="mt-3 text-xs text-emerald-100/90 animate-fade-up stagger-4">
