@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { CheckCircle2 } from 'lucide-react';
@@ -10,6 +10,14 @@ import type { Order } from '@/lib/types';
 import { money } from '@/lib/format';
 
 export default function OrdersPage() {
+  return (
+    <Suspense fallback={<p className="text-neutral-500">Cargando…</p>}>
+      <OrdersInner />
+    </Suspense>
+  );
+}
+
+function OrdersInner() {
   const token = useAuth((s) => s.token);
   const [orders, setOrders] = useState<Order[] | null>(null);
   const [error, setError] = useState<string | null>(null);
