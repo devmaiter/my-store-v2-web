@@ -3,13 +3,14 @@
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { Boxes, LayoutGrid, Package, ShieldAlert } from 'lucide-react';
+import { Boxes, Database, LayoutGrid, Package, ShieldAlert } from 'lucide-react';
 import { useAuth } from '@/lib/auth-store';
 
 const sections = [
   { href: '/admin', label: 'Dashboard', Icon: LayoutGrid, exact: true },
   { href: '/admin/products', label: 'Productos', Icon: Package },
   { href: '/admin/categories', label: 'Categorías', Icon: Boxes },
+  { href: '/admin/data', label: 'Datos en vivo', Icon: Database },
 ];
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
