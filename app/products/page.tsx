@@ -4,8 +4,9 @@ import { useEffect, useMemo, useState } from 'react';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Category, Product } from '@/lib/types';
-import ProductCard from '@/components/ProductCard';
+import ProductCard, { AddProductTile } from '@/components/ProductCard';
 import { ProductGridSkeleton } from '@/components/Skeleton';
+import { useAuth } from '@/lib/auth-store';
 
 type SortKey = 'newest' | 'price-asc' | 'price-desc' | 'name';
 
@@ -22,6 +23,10 @@ export default function ProductsPage() {
   const [sort, setSort] = useState<SortKey>('newest');
   const [limit] = useState(12);
   const [offset, setOffset] = useState(0);
+  const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isAdmin = mounted && user?.role === 'admin';
 
   useEffect(() => {
     api.listCategories().then(setCategories).catch(() => {});
@@ -174,11 +179,21 @@ export default function ProductsPage() {
         </div>
       )}
 
-      {visible && visible.length > 0 && (
+      {visible && (visible.length > 0 || isAdmin) && (
         <>
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {visible.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {isAdmin && (
+              <div className="animate-scale-in">
+                <AddProductTile />
+              </div>
+            )}
+            {visible.map((p, i) => (
+              <div key={p.id} className="animate-fade-up" style={{ animationDelay: `${i * 40}ms` }}>
+                <ProductCard
+                  product={p}
+                  onDeleted={(id) => setProducts((cur) => cur?.filter((x) => x.id !== id) ?? cur)}
+                />
+              </div>
             ))}
           </div>
           {total > limit && (

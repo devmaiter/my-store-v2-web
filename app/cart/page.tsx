@@ -38,7 +38,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[1fr_320px]">
+    <div className="grid gap-6 animate-fade-up lg:grid-cols-[1fr_320px]">
       <div className="space-y-4">
         <div className="flex items-baseline justify-between">
           <h1 className="text-2xl font-bold">Carrito</h1>

@@ -54,7 +54,7 @@ function LoginInner() {
   }
 
   return (
-    <div className="mx-auto max-w-md space-y-4">
+    <div className="mx-auto max-w-md space-y-4 animate-fade-up">
       <div className="text-center">
         <div className="mx-auto mb-3 inline-flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
           <Lock size={22} />

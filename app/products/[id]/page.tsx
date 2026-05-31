@@ -2,10 +2,11 @@
 
 import { use, useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Tag } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Minus, Pencil, Plus, ShoppingCart, Tag } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Category, Product } from '@/lib/types';
 import { useCart } from '@/lib/cart-store';
+import { useAuth } from '@/lib/auth-store';
 import { useToast } from '@/components/Toast';
 import { money } from '@/lib/format';
 import ProductCard from '@/components/ProductCard';
@@ -20,6 +21,10 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
   const [amount, setAmount] = useState(1);
   const add = useCart((s) => s.add);
   const toast = useToast();
+  const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+  const isAdmin = mounted && user?.role === 'admin';
 
   useEffect(() => {
     setProduct(null);
@@ -50,7 +55,7 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
   if (error) return <p className="rounded-md bg-red-50 p-4 text-red-700">Error: {error}</p>;
 
   return (
-    <div className="space-y-10">
+    <div className="space-y-10 animate-fade-up">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-1 text-sm text-neutral-500">
         <Link href="/" className="hover:text-emerald-700">Inicio</Link>
@@ -96,7 +101,18 @@ export default function ProductDetail({ params }: { params: Promise<{ id: string
                   <Tag size={11} /> {category.name}
                 </Link>
               )}
-              <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
+              <div className="flex items-start justify-between gap-3">
+                <h1 className="text-3xl font-bold tracking-tight">{product.name}</h1>
+                {isAdmin && (
+                  <Link
+                    href={`/admin/products/${product.id}`}
+                    title="Editar producto"
+                    className="inline-flex shrink-0 items-center gap-1 rounded-md border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-medium text-amber-800 transition-colors hover:bg-amber-100"
+                  >
+                    <Pencil size={12} /> Editar
+                  </Link>
+                )}
+              </div>
               <p className="text-4xl font-bold tracking-tight text-emerald-700">
                 {money(product.price)}
               </p>

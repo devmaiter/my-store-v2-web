@@ -36,11 +36,13 @@ export default function Header() {
   return (
     <header className="sticky top-0 z-40 border-b border-neutral-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
-        <Link href="/" className="flex items-center gap-2 text-xl font-bold tracking-tight">
-          <span className="rounded-md bg-emerald-600 p-1.5 text-white">
+        <Link href="/" className="group flex items-center gap-2 text-xl font-bold tracking-tight">
+          <span className="rounded-md bg-emerald-600 p-1.5 text-white transition-transform group-hover:scale-105">
             <Store size={18} />
           </span>
-          my-store<span className="text-emerald-600">.v2</span>
+          <span>
+            Julian<span className="text-emerald-600"> Store</span>
+          </span>
         </Link>
 
         <nav className="hidden items-center gap-6 md:flex">

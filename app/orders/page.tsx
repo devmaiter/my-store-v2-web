@@ -53,7 +53,7 @@ function OrdersInner() {
   if (error) return <p className="rounded-md bg-red-50 p-4 text-red-700">Error: {error}</p>;
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 animate-fade-up">
       {justId && (
         <div className="flex items-center gap-2 rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-emerald-800">
           <CheckCircle2 size={20} />

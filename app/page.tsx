@@ -2,16 +2,20 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Lock, ShoppingBag, Zap } from 'lucide-react';
+import { ArrowRight, Lock, ShoppingBag, Sparkles, Zap } from 'lucide-react';
 import { api } from '@/lib/api';
 import type { Category, Product } from '@/lib/types';
-import ProductCard from '@/components/ProductCard';
+import ProductCard, { AddProductTile } from '@/components/ProductCard';
 import { ProductGridSkeleton } from '@/components/Skeleton';
+import { useAuth } from '@/lib/auth-store';
 
 export default function HomePage() {
   const [featured, setFeatured] = useState<Product[] | null>(null);
   const [categories, setCategories] = useState<Category[] | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
 
   useEffect(() => {
     Promise.all([api.listProducts({ limit: 8 }), api.listCategories()])
@@ -22,46 +26,70 @@ export default function HomePage() {
       .catch((e) => setError(e.message));
   }, []);
 
+  const isAdmin = mounted && user?.role === 'admin';
+  const isAuthed = mounted && !!user;
+
   return (
     <div className="space-y-12">
       {/* Hero */}
-      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-8 text-white shadow-lg md:p-12">
-        <div className="absolute -right-12 -top-12 h-64 w-64 rounded-full bg-white/10 blur-3xl" />
-        <div className="absolute -bottom-16 -left-12 h-72 w-72 rounded-full bg-emerald-300/20 blur-3xl" />
+      <section className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-emerald-500 via-emerald-600 to-teal-700 p-8 text-white shadow-lg animate-fade-up md:p-12">
+        <div className="absolute -right-12 -top-12 h-64 w-64 animate-pulse rounded-full bg-white/10 blur-3xl" />
+        <div className="absolute -bottom-16 -left-12 h-72 w-72 animate-pulse rounded-full bg-emerald-300/20 blur-3xl" />
         <div className="relative max-w-2xl">
-          <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-xs font-medium backdrop-blur">
+          <span className="inline-flex items-center gap-1 rounded-full bg-white/15 px-3 py-1 text-xs font-medium backdrop-blur animate-fade-down">
             <Zap size={12} /> Demo live · Next.js 16 + Express + Postgres
           </span>
-          <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl">
-            Tu tienda online,<br />conectada de verdad.
+          <h1 className="mt-4 text-3xl font-bold tracking-tight md:text-5xl animate-fade-up stagger-1">
+            Bienvenido a<br />
+            <span className="bg-gradient-to-r from-white to-emerald-100 bg-clip-text text-transparent">
+              Julian Store
+            </span>
           </h1>
-          <p className="mt-3 max-w-xl text-emerald-50 md:text-lg">
-            Catálogo dinámico, carrito persistente, checkout autenticado con JWT
-            y panel admin para gestionar productos y categorías en vivo.
+          <p className="mt-3 max-w-xl text-emerald-50 md:text-lg animate-fade-up stagger-2">
+            {isAuthed ? (
+              <>
+                Hola, <span className="font-semibold">{user.email.split('@')[0]}</span>. Explora el catálogo o
+                {isAdmin ? ' gestiona tus productos.' : ' continúa con tu compra.'}
+              </>
+            ) : (
+              'Tu tienda online de demostración: catálogo dinámico, carrito persistente, checkout autenticado con JWT y panel admin en tiempo real.'
+            )}
           </p>
-          <div className="mt-6 flex flex-wrap gap-3">
+          <div className="mt-6 flex flex-wrap gap-3 animate-fade-up stagger-3">
             <Link
               href="/products"
-              className="inline-flex items-center gap-1.5 rounded-md bg-white px-4 py-2.5 font-medium text-emerald-700 transition-colors hover:bg-emerald-50"
+              className="inline-flex items-center gap-1.5 rounded-md bg-white px-4 py-2.5 font-medium text-emerald-700 transition-all hover:bg-emerald-50 hover:shadow-md"
             >
               <ShoppingBag size={16} /> Ver catálogo
             </Link>
-            <Link
-              href="/login"
-              className="inline-flex items-center gap-1.5 rounded-md border border-white/30 px-4 py-2.5 font-medium text-white backdrop-blur transition-colors hover:bg-white/10"
-            >
-              <Lock size={16} /> Login demo
-            </Link>
+            {isAdmin && (
+              <Link
+                href="/admin"
+                className="inline-flex items-center gap-1.5 rounded-md bg-amber-400 px-4 py-2.5 font-medium text-amber-900 transition-all hover:bg-amber-300 hover:shadow-md"
+              >
+                <Sparkles size={16} /> Panel admin
+              </Link>
+            )}
+            {!isAuthed && mounted && (
+              <Link
+                href="/login"
+                className="inline-flex items-center gap-1.5 rounded-md border border-white/30 px-4 py-2.5 font-medium text-white backdrop-blur transition-all hover:bg-white/10"
+              >
+                <Lock size={16} /> Login demo
+              </Link>
+            )}
           </div>
-          <p className="mt-3 text-xs text-emerald-100/90">
-            Prueba como admin: <code className="rounded bg-black/20 px-1 py-0.5 font-mono">admin@store.com</code> /{' '}
-            <code className="rounded bg-black/20 px-1 py-0.5 font-mono">superSecret123</code>
-          </p>
+          {!isAuthed && mounted && (
+            <p className="mt-3 text-xs text-emerald-100/90 animate-fade-up stagger-4">
+              Prueba como admin: <code className="rounded bg-black/20 px-1 py-0.5 font-mono">admin@store.com</code> /{' '}
+              <code className="rounded bg-black/20 px-1 py-0.5 font-mono">superSecret123</code>
+            </p>
+          )}
         </div>
       </section>
 
       {/* Categories grid */}
-      <section>
+      <section className="animate-fade-up stagger-2">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-xl font-semibold">Explora por categoría</h2>
           <Link href="/categories" className="inline-flex items-center gap-1 text-sm text-emerald-700 hover:underline">
@@ -76,18 +104,19 @@ export default function HomePage() {
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
-            {categories.slice(0, 6).map((c) => (
+            {categories.slice(0, 6).map((c, i) => (
               <Link
                 key={c.id}
                 href={`/categories/${c.id}`}
-                className="group relative aspect-square overflow-hidden rounded-lg bg-neutral-100"
+                style={{ animationDelay: `${i * 50}ms` }}
+                className="group relative aspect-square overflow-hidden rounded-lg bg-neutral-100 animate-scale-in"
               >
                 {c.image && (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={c.image}
                     alt={c.name}
-                    className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-110"
+                    className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
                   />
                 )}
@@ -102,7 +131,7 @@ export default function HomePage() {
       </section>
 
       {/* Featured */}
-      <section>
+      <section className="animate-fade-up stagger-3">
         <div className="mb-4 flex items-baseline justify-between">
           <h2 className="text-xl font-semibold">Destacados</h2>
           <Link href="/products" className="inline-flex items-center gap-1 text-sm text-emerald-700 hover:underline">
@@ -111,15 +140,22 @@ export default function HomePage() {
         </div>
         {error && <p className="rounded-md bg-red-50 p-4 text-red-700">Error: {error}</p>}
         {featured === null && !error && <ProductGridSkeleton count={8} />}
-        {featured && featured.length === 0 && (
+        {featured && featured.length === 0 && !isAdmin && (
           <p className="rounded-md border border-dashed border-neutral-300 bg-white p-6 text-center text-neutral-500">
             Aún no hay productos en el catálogo.
           </p>
         )}
-        {featured && featured.length > 0 && (
+        {featured && (featured.length > 0 || isAdmin) && (
           <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-            {featured.map((p) => (
-              <ProductCard key={p.id} product={p} />
+            {isAdmin && (
+              <div className="animate-scale-in">
+                <AddProductTile />
+              </div>
+            )}
+            {featured.map((p, i) => (
+              <div key={p.id} className="animate-fade-up" style={{ animationDelay: `${i * 50}ms` }}>
+                <ProductCard product={p} onDeleted={(id) => setFeatured((cur) => cur?.filter((x) => x.id !== id) ?? cur)} />
+              </div>
             ))}
           </div>
         )}

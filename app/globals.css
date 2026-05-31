@@ -42,3 +42,52 @@ body {
   &:hover { @apply bg-red-50; }
   &:disabled { @apply cursor-not-allowed opacity-50; }
 }
+
+/* Entrance animations */
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes fade-down {
+  from { opacity: 0; transform: translateY(-12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes scale-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@utility animate-fade-in {
+  animation: fade-in 0.4s ease-out both;
+}
+@utility animate-fade-up {
+  animation: fade-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@utility animate-fade-down {
+  animation: fade-down 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+@utility animate-scale-in {
+  animation: scale-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+/* Stagger delays for grid items */
+@utility stagger-1  { animation-delay: 0.04s; }
+@utility stagger-2  { animation-delay: 0.08s; }
+@utility stagger-3  { animation-delay: 0.12s; }
+@utility stagger-4  { animation-delay: 0.16s; }
+@utility stagger-5  { animation-delay: 0.20s; }
+@utility stagger-6  { animation-delay: 0.24s; }
+@utility stagger-7  { animation-delay: 0.28s; }
+@utility stagger-8  { animation-delay: 0.32s; }
+@utility stagger-9  { animation-delay: 0.36s; }
+@utility stagger-10 { animation-delay: 0.40s; }
+@utility stagger-11 { animation-delay: 0.44s; }
+@utility stagger-12 { animation-delay: 0.48s; }
