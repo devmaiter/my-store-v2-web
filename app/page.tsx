@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Database, Lock, ShoppingBag, Sparkles, Zap } from 'lucide-react';
+import { ArrowRight, Code2, Database, Linkedin, Lock, Mail, ShoppingBag, Sparkles, Zap } from 'lucide-react';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 const SWAGGER_URL = `${API_BASE.replace(/\/api\/v1\/?$/, '')}/docs`;
@@ -172,6 +172,44 @@ export default function HomePage() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* About / portfolio callout */}
+      <section className="animate-fade-up overflow-hidden rounded-2xl border border-neutral-200 bg-white p-6 shadow-sm md:p-10">
+        <div className="grid items-center gap-6 md:grid-cols-[1fr_auto]">
+          <div className="space-y-3">
+            <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
+              <Code2 size={12} /> Sobre este proyecto
+            </span>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Esto es portfolio, no producción real.
+            </h2>
+            <p className="max-w-2xl text-sm leading-relaxed text-neutral-600">
+              Soy <strong className="text-neutral-800">Julian Osorio</strong>, full-stack freelance
+              en Colombia 🇨🇴. Este demo es público para mostrar cómo trabajo de punta a punta:
+              API REST en Express con auth JWT, base de datos Postgres con migraciones y seeders,
+              storefront en Next.js 16 con state persistente y panel admin con CRUD en vivo, todo
+              desplegado en Railway + Vercel. Si te interesa contratarme para un proyecto similar,
+              hablemos.
+            </p>
+          </div>
+          <div className="flex flex-col gap-2">
+            <a
+              href="https://www.linkedin.com/in/oscar-julian-osorio-romero/"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-[#0a66c2] px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <Linkedin size={16} /> LinkedIn
+            </a>
+            <a
+              href="mailto:f1000161620@gmail.com?subject=Hablemos%20de%20un%20proyecto"
+              className="inline-flex items-center justify-center gap-1.5 rounded-md bg-emerald-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md"
+            >
+              <Mail size={16} /> Escríbeme
+            </a>
+          </div>
+        </div>
       </section>
     </div>
   );

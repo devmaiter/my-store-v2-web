@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Julian Store · Storefront
 
-## Getting Started
+Storefront moderno construido con **Next.js 16 + React 19 + Tailwind 4 + Zustand**, conectado a una API REST propia (Express + Postgres + JWT). Catálogo público, carrito persistente, checkout autenticado y panel admin con CRUD en vivo.
 
-First, run the development server:
+![Next.js](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs)
+![React](https://img.shields.io/badge/React-19-61dafb?logo=react&logoColor=000)
+![TypeScript](https://img.shields.io/badge/TypeScript-5-3178c6?logo=typescript&logoColor=fff)
+![Tailwind](https://img.shields.io/badge/Tailwind-4-38bdf8?logo=tailwindcss&logoColor=fff)
+![Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-000?logo=vercel)
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+---
+
+## 🌐 Demo en vivo
+
+| | |
+|---|---|
+| **Storefront** | https://my-store-v2-web.vercel.app |
+| **Backend API** | https://my-store-v2-production.up.railway.app/docs |
+| **Repositorio API** | https://github.com/devmaiter/my-store-v2 |
+
+**Credenciales demo** (pre-rellenadas en el form de login):
+
+| Rol | Email | Password |
+|---|---|---|
+| **Admin** | `admin@store.com` | `superSecret123` |
+| **Customer** | `customer@store.com` | `customer123` |
+
+---
+
+## ✨ Features
+
+- **Catálogo público** con búsqueda, filtro por categoría, orden por precio/nombre, paginación
+- **Carrito local persistente** (Zustand + localStorage) — sobrevive a recargas
+- **Checkout autenticado** con JWT, transacción atómica de orden + items
+- **Panel admin** (`/admin`) protegido por rol con:
+  - Dashboard con KPIs y accesos rápidos
+  - CRUD de productos y categorías (con vista previa en vivo)
+  - **Datos en vivo** (`/admin/data`) — tablas crudas de Postgres con auto-refresh cada 5s
+  - Link directo al servicio Postgres en Railway para queries SQL
+- **UX moderna:** toasts, skeletons, animaciones fade/scale escalonadas, dark hover states
+- **Rol-aware UI:** customer solo ve y compra · admin además gestiona inline desde cada card (✏️ + 🗑️ sobre productos/categorías sin salir del catálogo)
+- **Responsive** y accesible, con sticky header + navegación móvil
+
+---
+
+## 🛠 Stack
+
+- **Framework:** Next.js 16 (App Router, Server Components, Turbopack)
+- **UI:** React 19 + Tailwind CSS v4 + lucide-react icons
+- **Estado:** Zustand con `persist` middleware
+- **Tipos:** TypeScript 5
+- **Auth:** JWT (almacenado en zustand persistente)
+- **Deploy:** Vercel (auto-deploy desde `master`)
+
+---
+
+## 🏗 Arquitectura
+
+```
+app/
+├── layout.tsx               # Header + Footer + ToastProvider
+├── page.tsx                 # Home: hero auth-aware + categorías + destacados
+├── products/
+│   ├── page.tsx             # Listado con filtros y paginación
+│   └── [id]/page.tsx        # Detalle + relacionados + admin edit
+├── categories/
+│   ├── page.tsx
+│   └── [id]/page.tsx
+├── cart/page.tsx            # Carrito con resumen sticky
+├── checkout/page.tsx        # Crea orden via JWT
+├── login + register
+├── orders/page.tsx          # "Mis órdenes"
+└── admin/
+    ├── layout.tsx           # Guard role=admin + sidebar
+    ├── page.tsx             # Dashboard
+    ├── products/            # list + new + [id] (forms reutilizan ProductForm)
+    ├── categories/          # list + new + [id]
+    └── data/page.tsx        # Viewer Postgres en vivo con tabs
+components/
+├── Header.tsx               # Sticky + role-aware nav + Backend/Postgres CTAs
+├── ProductCard.tsx          # Con admin overlay (edit/delete)
+├── Toast.tsx                # Provider + hook
+└── Skeleton.tsx
+lib/
+├── api.ts                   # Cliente typed; CRUD products/categories/orders + admin
+├── auth-store.ts            # Zustand persistido
+├── cart-store.ts            # Zustand persistido
+├── format.ts                # money(COP)
+└── types.ts
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🚀 Quick start (local)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Requisitos: **Node 20+** y la [API backend](https://github.com/devmaiter/my-store-v2) corriendo en `:3010`.
 
-## Learn More
+```bash
+git clone https://github.com/devmaiter/my-store-v2-web
+cd my-store-v2-web
+npm install
+cp .env.local.example .env.local   # ajusta NEXT_PUBLIC_API_URL
+npm run dev                        # http://localhost:3030
+```
 
-To learn more about Next.js, take a look at the following resources:
+`.env.local`:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:3010/api/v1
+# o para apuntar a la API ya desplegada:
+# NEXT_PUBLIC_API_URL=https://my-store-v2-production.up.railway.app/api/v1
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 🌍 Deploy
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Está desplegado en **Vercel** vía integración con GitHub. Cada push a `master` redeploya automáticamente.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Variables en Vercel:
+
+```
+NEXT_PUBLIC_API_URL=https://my-store-v2-production.up.railway.app/api/v1
+```
+
+---
+
+## 👤 Autor
+
+**Julian Osorio** · Desarrollador full-stack freelance · Colombia 🇨🇴
+
+- 🌐 LinkedIn: [oscar-julian-osorio-romero](https://www.linkedin.com/in/oscar-julian-osorio-romero/)
+- 💼 GitHub: [devmaiter](https://github.com/devmaiter)
+- 📧 f1000161620@gmail.com
+
+¿Buscas un dev para tu próximo proyecto? Hablemos 👋
