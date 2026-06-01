@@ -9,6 +9,7 @@ import { useCart } from '@/lib/cart-store';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? '';
 const SWAGGER_URL = `${API_BASE.replace(/\/api\/v1\/?$/, '')}/docs`;
+const RAILWAY_PG_URL = 'https://railway.com/project/70667544-d497-44a0-a3d4-c53c8df4658e';
 
 export default function Header() {
   const { user, clear } = useAuth();
@@ -64,8 +65,18 @@ export default function Header() {
             title="Abrir Swagger UI con los endpoints del backend"
           >
             <Database size={14} />
-            <span>Ver backend</span>
+            <span>Backend</span>
             <span className="ml-1 inline-block h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300" />
+          </a>
+          <a
+            href={RAILWAY_PG_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="hidden md:inline-flex items-center gap-1.5 rounded-md bg-purple-700 px-2.5 py-1.5 text-xs font-medium text-white shadow-sm hover:bg-purple-800"
+            title="Abrir el servicio Postgres en Railway (queries SQL directos)"
+          >
+            <Database size={14} />
+            <span>Postgres</span>
           </a>
           <Link
             href="/cart"
